@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 15:27:10 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 14:17:07 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:43:55 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int			ftbi_set_digit(t_ftbi *bi, size_t i, char to)
 {
 	int		ret_error;
+
 	if (i >= bi->alloc_size && (ret_error = ftbi_realloc(bi, i)) < 0)
 		return (ret_error);
 	bi->a[i] = to;

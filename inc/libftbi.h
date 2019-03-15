@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 15:20:10 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 16:10:14 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:42:58 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,18 +106,3 @@ t_ftbi				*ftbi_mod(const t_ftbi *a, const t_ftbi *b);
 t_ftbi				*ftbi_div_work(t_ftbi *num, t_ftbi *den, t_ftbi **mod);
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

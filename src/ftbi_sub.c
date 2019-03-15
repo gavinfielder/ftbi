@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 22:50:27 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 00:42:01 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:44:07 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int		borrow(t_ftbi *gt, size_t fori)
 {
 	if (gt->a[fori + 1] == '0')
 		gt->a[fori + 1] += borrow(gt, fori + 1);
-	gt->a[fori + 1] -=  1;
+	gt->a[fori + 1] -= 1;
 	return (10);
 }
 

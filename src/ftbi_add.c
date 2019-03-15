@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 21:01:35 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 00:30:51 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:43:43 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static t_ftbi	*delegate_to_sub(const t_ftbi *a, const t_ftbi *b)
 	return (r);
 }
 
-t_ftbi	*ftbi_add(const t_ftbi *a, const t_ftbi *b)
+t_ftbi			*ftbi_add(const t_ftbi *a, const t_ftbi *b)
 {
 	t_ftbi	*r;
 
