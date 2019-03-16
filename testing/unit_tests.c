@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 18:45:04 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 17:10:40 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/15 18:51:46 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -838,6 +838,13 @@ int mul_ultimate_1(void) {
 	int ret = assert_str(r->a, "0849058316837189257696611987092143457799457164790481361145");
 	ftbi_del(&a); ftbi_del(&b); ftbi_del(&r); return (ret);}
 
+int mul_custom_1(void) {
+	t_ftbi *a = ftbi_new_str("11920928955078125");
+	t_ftbi *b = ftbi_new_llong(838861);
+	t_ftbi *r = ftbi_mul(a, b);
+	int ret = assert_str(r->a, "52651019758148320000001");
+	ftbi_del(&a); ftbi_del(&b); ftbi_del(&r); return (ret);}
+
 /*
 ** -----------------------------------------------------------------------------
 **                                   ftbi_div2
@@ -1164,6 +1171,58 @@ int mod_by_zero(void) {
 	t_ftbi *r = ftbi_mod(a, b);
 	int ret = (r != NULL ? 1 : 0);
 	ftbi_del(&a); ftbi_del(&b); ftbi_del(&r); return (ret);}
+
+/*
+** -----------------------------------------------------------------------------
+**                                   ftbi_pow
+** -----------------------------------------------------------------------------
+*/
+
+int pow_2_3(void) {
+	t_ftbi *a = ftbi_new_llong(2);
+	t_ftbi *r = ftbi_pow(a, 3);
+	int ret = assert_long_long(ftbi_to_ll(r), 8);
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+int pow_n4_3(void) {
+	t_ftbi *a = ftbi_new_llong(-4);
+	t_ftbi *r = ftbi_pow(a, 3);
+	int ret = assert_long_long(ftbi_to_ll(r), -64);
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+int pow_3_0(void) {
+	t_ftbi *a = ftbi_new_llong(3);
+	t_ftbi *r = ftbi_pow(a, 0);
+	int ret = assert_long_long(ftbi_to_ll(r), 1);
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+int pow_3_1(void) {
+	t_ftbi *a = ftbi_new_llong(3);
+	t_ftbi *r = ftbi_pow(a, 1);
+	int ret = assert_long_long(ftbi_to_ll(r), 3);
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+int pow_3_n1(void) {
+	t_ftbi *a = ftbi_new_llong(3);
+	t_ftbi *r = ftbi_pow(a, -1);
+	int ret = assert_long_long(ftbi_to_ll(r), 0);
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+int pow_ultimate_1(void) {
+	t_ftbi *a = ftbi_new_llong(7872);
+	t_ftbi *r = ftbi_pow(a, 17);
+	int ret = assert_str(r->a, "2173884627137906291575416418312492102349954748765514914274014771171");
+	ftbi_del(&a); ftbi_del(&r); return (ret);}
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 15:20:10 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 18:42:58 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 19:07:04 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_ftbi				*ftbi_new_llong(long long val);
 t_ftbi				*ftbi_new_ullong(unsigned long long val);
 t_ftbi				*ftbi_new_str(char *str);
 void				ftbi_del(t_ftbi **bi);
+t_ftbi				*ftbi_new_pow(int base, int exp);
 
 /*
 ** -----------------------------------------------------------------------------
@@ -96,6 +97,7 @@ t_ftbi				*ftbi_divmod(const t_ftbi *a, const t_ftbi *b,
 t_ftbi				*ftbi_div2(const t_ftbi *a);
 t_ftbi				*ftbi_divpow10(const t_ftbi *a, size_t pow);
 t_ftbi				*ftbi_mod(const t_ftbi *a, const t_ftbi *b);
+t_ftbi				*ftbi_pow(const t_ftbi *a, int exp);
 
 /*
 ** -----------------------------------------------------------------------------

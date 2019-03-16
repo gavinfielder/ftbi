@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 15:44:57 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/13 19:50:11 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/14 23:18:46 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,6 @@ t_ftbi			*ftbi_new_ullong(unsigned long long val)
 		val /= 10;
 		i++;
 	}
-	bi->len = i - 1;
+	bi->len = i;
 	return (bi);
 }

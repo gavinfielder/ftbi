@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 22:21:12 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 13:16:25 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/15 00:02:17 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,16 @@ t_ftbi	*ftbi_pow10(size_t pow)
 
 	r = ftbi_new_llong(0);
 	ftbi_set_digit(r, pow, '1');
+	return (r);
+}
+
+t_ftbi	*ftbi_new_pow(int base, int exp)
+{
+	t_ftbi	*b;
+	t_ftbi	*r;
+
+	FTBI_MALGRD(b = ftbi_new_llong((long long)base));
+	FTBI_MALGRD(r = ftbi_pow(b, exp));
+	ftbi_del(&b);
 	return (r);
 }

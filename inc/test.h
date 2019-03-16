@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 18:44:17 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 00:11:03 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/15 19:30:20 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <string.h>
 # include "libftbi.h"
+# include "ftbf.h"
 
 # define TEST_OUTPUT_FILENAME "test_results.txt"
 
@@ -45,6 +46,12 @@ int			assert_int(int actual, int expected);
 int			assert_size_t(size_t actual, size_t expected);
 int			assert_long_long(long long actual, long long expected);
 int			assert_str(char *actual, char *expected);
+
+//printing
+void				print_bits(unsigned long *p, unsigned long start,
+						unsigned long stop, int dot);
+
+void				ftbi_debug_print(t_ftbi *bi);
 
 #endif
 

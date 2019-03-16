@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 19:07:12 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/13 22:19:09 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/15 19:31:21 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdarg.h>
@@ -80,4 +80,32 @@ void	append_to_log(const char *fmt, ...)
 		close(fd);
 	}
 	va_end(args);
+}
+
+void	print_bits(unsigned long *p, unsigned long start,
+				unsigned long stop, int dot)
+{
+	unsigned long mask;
+
+	mask = (unsigned long)1 << (unsigned long)(stop);
+	for (unsigned long i = start; i <= stop; i++)
+	{
+		if ((*p) & mask)
+			write(1, "1", 1);
+		else
+			write(1, "0", 1);
+		if (dot && (i + 1) % 4 == 0)
+			write(1, ".", 1);
+		mask >>= 1;
+	}
+}
+
+void	ftbi_debug_print(t_ftbi *bi)
+{
+	printf("bi->len=%lu; value is: ", bi->len);
+	for (int i = 0; i < (int)(bi->len); i++)
+	{
+		printf("%c", bi->a[bi->len - i - 1]);
+	}
+	printf("\n");
 }
