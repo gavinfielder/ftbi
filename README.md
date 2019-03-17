@@ -59,7 +59,6 @@ All the functions here return a **newly malloc'd** `t_fbi *`.
 
 ## FTBF Functions
 
-## Functions
 ### Constructors (Binary FP to ftbf conversions)
 
 - `t_ftbf *ftbf_new_float(float f)` converts to ftbf from float.
