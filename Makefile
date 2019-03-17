@@ -6,7 +6,7 @@
 #    By: gfielder <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/02/28 21:19:45 by gfielder          #+#    #+#              #
-#    Updated: 2019/03/15 18:53:22 by gfielder         ###   ########.fr        #
+#    Updated: 2019/03/16 20:59:02 by gfielder         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ SRC=src/ftbi_cond_1.c src/ftbi_cond_2.c src/ftbi_del.c src/ftbi_del.c \
 	src/ftbi_add.c src/ftbi_neg.c src/ftbi_new_special.c src/ftbi_sub.c \
 	src/ftbi_mul.c src/ftbi_utils_2.c src/ftbi_div_special.c \
 	src/ftbi_div_backend.c src/ftbi_div.c src/ftbi_pow.c \
-	ftbf/ftbf_print.c ftbf/ftbf_new.c ftbf/ftbf_del.c
+	ftbf/ftbf_new.c ftbf/ftbf_del.c ftbf/ftbf_round.c ftbf/ftbf_tostr.c \
+	ftbf/ftbf_utils.c ftbf/ftbf_shift.c ftbf/ftbf_check_special.c
 
 SRC_TEST=testing/main.c testing/test.c testing/assert.c
 UNIT_TEST_FILE=testing/unit_tests.c

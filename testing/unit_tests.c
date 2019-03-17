@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 18:45:04 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/15 18:51:46 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/16 20:53:42 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1213,13 +1213,1579 @@ int pow_ultimate_1(void) {
 	t_ftbi *r = ftbi_pow(a, 17);
 	int ret = assert_str(r->a, "2173884627137906291575416418312492102349954748765514914274014771171");
 	ftbi_del(&a); ftbi_del(&r); return (ret);}
+	
+/*
+** -----------------------------------------------------------------------------
+**                     ftbf : general construction and tostr
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_general_simple(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("15");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -1;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "1.5");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_general_negexp(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("15");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -2;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0.15");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_general_negexp_negative(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("15");
+	f->val->neg = 1;
+	f->special = FTBF_NORMAL;
+	f->exp = -2;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-0.15");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_general_big(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("726387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -3;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "726.387");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_general_small(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("72");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -5;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0.00072");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_general_exp_gt_len(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("72");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = 5;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "7200000");
+	ftbf_del(&f); free(s); return (ret);}
+
+	
+/*
+** -----------------------------------------------------------------------------
+**                                  ftbf_round
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_round_simple(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "722.4564");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_exact(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, 6));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "722.456387");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_over(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, 8));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "722.45638700");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_totenth(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, 1));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "722.5");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_towhole(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, 0));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "722");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_tonegativeplaces(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, -2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "700");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_to_next_power(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, -3));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "1000");
+	ftbf_del(&f); free(s); return (ret);}
+
+/* I've decided this is undefined behavior.
+ int ftbf_round_too_much(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_str("722456387");
+	f->val->neg = 0;
+	f->special = FTBF_NORMAL;
+	f->exp = -6; //722.456387 
+	ftbf_repl(&f, ftbf_round(f, -4));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0");
+	ftbf_del(&f); free(s); return (ret);}
+*/
+
+/*
+** -----------------------------------------------------------------------------
+**                        ftbf : special values to string
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_posinf_tostr(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSINF;
+	f->exp = 0;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "inf");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_neginf_tostr(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_NEGINF;
+	f->exp = 0;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-inf");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_nan_tostr(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_NAN;
+	f->exp = 0;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "nan");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_poszero_tostr(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSZERO;
+	f->exp = 0;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_negzero_tostr(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 1;
+	f->special = FTBF_NEGZERO;
+	f->exp = 0;
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-0");
+	ftbf_del(&f); free(s); return (ret);}
+
+/*
+** -----------------------------------------------------------------------------
+**                        ftbf : rounding special values
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_rounding_posinf(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSINF;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "inf");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_rounding_neginf(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_NEGINF;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-inf");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_rounding_nan(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_NAN;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "nan");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_zero_prec2(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0.00");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_negzero_prec2(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 1;
+	f->special = FTBF_NEGZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 2));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-0.00");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_zero_prec0(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 0));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_negzero_prec0(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 1;
+	f->special = FTBF_NEGZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 0));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-0");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_zero_prec5(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 0;
+	f->special = FTBF_POSZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 5));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "0.00000");
+	ftbf_del(&f); free(s); return (ret);}
+
+int ftbf_round_negzero_prec5(void)
+{
+	t_ftbf *f = (t_ftbf *)malloc(sizeof(t_ftbf));
+	f->val = ftbi_new_llong(0);
+	f->val->neg = 1;
+	f->special = FTBF_NEGZERO;
+	f->exp = 0;
+	ftbf_repl(&f, ftbf_round(f, 5));
+	char *s = ftbf_tostr(f);
+	int ret = assert_str(s, "-0.00000");
+	ftbf_del(&f); free(s); return (ret);}
+
+/*
+** -----------------------------------------------------------------------------
+**                                ftbf : float
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_float_prec4_simple(void) {
+	float from = 1.5f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_inexact(void) {
+	float from = 1.1f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_posexp(void) {
+	float from = 5.4f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_negexp(void) {
+	float from = 0.94f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_negexp_custom1(void) {
+	float from = 0.45f;
+	t_ftbf *f = ftbf_new_float(from);
+	//write(1, "\n", 1);
+	//ftbf_print(f);
+	//write(1, "\n", 1);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_negexp_exact(void) {
+	float from = 0.75f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_negexp_small(void) {
+	float from = 0.037f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_posexp_big(void) {
+	float from = 236.23f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_0(void) {
+	float from = 0.0f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_simple(void) {
+	float from = 1.5f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_inexact(void) {
+	float from = 1.1f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_posexp(void) {
+	float from = 5.4f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_negexp(void) {
+	float from = 0.94f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_negexp_exact(void) {
+	float from = 0.45f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_negexp_small(void) {
+	float from = 0.037f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_posexp_big(void) {
+	float from = 236.23f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec7_0(void) {
+	float from = 0.0f;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
 
 
 
+/*
+** -----------------------------------------------------------------------------
+**                                ftbf : double
+** -----------------------------------------------------------------------------
+*/
 
+int ftbf_double_prec4_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
 
+int ftbf_double_prec4_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
 
+int ftbf_double_prec4_posexp(void) {
+	double from = 5.4;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
 
+int ftbf_double_prec4_negexp(void) {
+	double from = 0.94;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec4_negexp_exact(void) {
+	double from = 0.45;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec4_negexp_small(void) {
+	double from = 0.037;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec4_posexp_big(void) {
+	double from = 236.23;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec4_0(void) {
+	double from = 0.0f;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_posexp(void) {
+	double from = 5.4;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_negexp(void) {
+	double from = 0.94;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_negexp_exact(void) {
+	double from = 0.45;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_negexp_small(void) {
+	double from = 0.037;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_posexp_big(void) {
+	double from = 236.23;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec7_0(void) {
+	double from = 0.0;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_posexp(void) {
+	double from = 5.4436246;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_negexp(void) {
+	double from = 0.944362;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_negexp_exact(void) {
+	double from = 0.75;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_negexp_small(void) {
+	double from = 0.00036;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_posexp_big(void) {
+	double from = 3236.233;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec10_0(void) {
+	double from = 0.0;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_posexp(void) {
+	double from = 5.4436246;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_negexp(void) {
+	double from = 0.944362;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_negexp_exact(void) {
+	double from = 0.75;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_negexp_small(void) {
+	double from = 0.00036;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_posexp_big(void) {
+	double from = 3236.233;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec15_0(void) {
+	double from = 0.0;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_posexp(void) {
+	double from = 5.4436246;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_negexp(void) {
+	double from = 0.944362;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_negexp_exact(void) {
+	double from = 0.75;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_negexp_small(void) {
+	double from = 0.00036;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_posexp_big(void) {
+	double from = 3236.233;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec17_0(void) {
+	double from = 0.0;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_simple(void) {
+	double from = 1.5;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_inexact(void) {
+	double from = 1.1;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_posexp(void) {
+	double from = 5.4436246;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_negexp(void) {
+	double from = 0.944362;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_negexp_exact(void) {
+	double from = 0.75;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_negexp_small(void) {
+	double from = 0.00036;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_posexp_big(void) {
+	double from = 3236.233;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec18_0(void) {
+	double from = 0.0;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+/*
+** -----------------------------------------------------------------------------
+**                             ftbf : long double
+** -----------------------------------------------------------------------------
+*/
+
+int ftbf_ldouble_prec4_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_posexp(void) {
+	long double from = 5.4l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_negexp(void) {
+	long double from = 0.94l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_negexp_exact(void) {
+	long double from = 0.45l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_negexp_small(void) {
+	long double from = 0.0347l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_posexp_big(void) {
+	long double from = 236.23l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+int ftbf_ldouble_prec7_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_posexp(void) {
+	long double from = 5.4l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_negexp(void) {
+	long double from = 0.94l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_negexp_exact(void) {
+	long double from = 0.45l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_negexp_small(void) {
+	long double from = 0.0347l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_posexp_big(void) {
+	long double from = 236.23l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+int ftbf_ldouble_prec10_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_posexp(void) {
+	long double from = 5.4436246l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_negexp(void) {
+	long double from = 0.944362l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_negexp_exact(void) {
+	long double from = 0.75l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_negexp_small(void) {
+	long double from = 0.00036l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_posexp_big(void) {
+	long double from = 3236.233l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+int ftbf_ldouble_prec15_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_posexp(void) {
+	long double from = 5.4436246l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_negexp(void) {
+	long double from = 0.944362l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_negexp_exact(void) {
+	long double from = 0.75l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_negexp_small(void) {
+	long double from = 0.00036l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_posexp_big(void) {
+	long double from = 3236.233l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_posexp(void) {
+	long double from = 5.4436246l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_negexp(void) {
+	long double from = 0.944362l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_negexp_exact(void) {
+	long double from = 0.75l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_negexp_small(void) {
+	long double from = 0.00036l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_posexp_big(void) {
+	long double from = 3236.233l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_posexp(void) {
+	long double from = 5.4436246l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_negexp(void) {
+	long double from = 0.944362l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_negexp_exact(void) {
+	long double from = 0.75l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_negexp_small(void) {
+	long double from = 0.00036l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_posexp_big(void) {
+	long double from = 3236.233l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_simple(void) {
+	long double from = 1.5l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_inexact(void) {
+	long double from = 1.1l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_posexp(void) {
+	long double from = 5.4436246l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_negexp(void) {
+	long double from = 0.944362l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_negexp_exact(void) {
+	long double from = 0.75l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_negexp_small(void) {
+	long double from = 0.00000000036l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_posexp_big(void) {
+	long double from = 3224536.99233l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+/*
+** -----------------------------------------------------------------------------
+**                  ftbf: Binary to decimal of special values
+** -----------------------------------------------------------------------------
+*/
+
+//the float and double positive zeros were already handled
+
+int ftbf_ldouble_prec4_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec7_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 7));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.7Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec10_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 10));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.10Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec15_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 15));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.15Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec17_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 17));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.17Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec18_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 18));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.18Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec20_0(void) {
+	long double from = 0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 20));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.20Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_prec4_n0(void) {
+	long double from = -0.0l;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_prec4_n0(void) {
+	double from = -0.0l;
+	t_ftbf *f = ftbf_new_double(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_prec4_n0(void) {
+	float from = -0.0l;
+	t_ftbf *f = ftbf_new_float(from);
+	ftbf_repl(&f, ftbf_round(f, 4));
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%.4lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_posinf(void) {
+	float from; *((unsigned int *)(&from)) = 0x7F800000;
+	t_ftbf *f = ftbf_new_float(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_neginf(void) {
+	float from; *((unsigned int *)(&from)) = 0xFF800000;
+	t_ftbf *f = ftbf_new_float(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_posinf(void) {
+	double from; *((unsigned long *)(&from)) = 0x7FF0000000000000;
+	t_ftbf *f = ftbf_new_double(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_neginf(void) {
+	double from; *((unsigned long *)(&from)) = 0xFFF0000000000000;
+	t_ftbf *f = ftbf_new_double(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_float_nan(void) {
+	float from; *((unsigned int *)(&from)) = 0x7F800010;
+	t_ftbf *f = ftbf_new_float(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_double_nan(void) {
+	double from; *((unsigned long *)(&from)) = 0x7FF0000000100000;
+	t_ftbf *f = ftbf_new_double(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%f", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_nan(void) {
+	long double from; 
+	((unsigned short *)(&from))[4] = 0x7FFF;
+	*((unsigned long *)(&from)) = 0x0000000000100000;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_posinf(void) {
+	long double from; 
+	((unsigned short *)(&from))[4] = 0x7FFF;
+	*((unsigned long *)(&from)) = 0x0000000000000000;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
+
+int ftbf_ldouble_neginf(void) {
+	long double from; 
+	((unsigned short *)(&from))[4] = 0xFFFF;
+	*((unsigned long *)(&from)) = 0x0000000000000000;
+	t_ftbf *f = ftbf_new_ldouble(from);
+	char *s = ftbf_tostr(f);
+	char *t; asprintf(&t, "%Lf", from);
+	int ret = assert_str(s, t);
+	ftbf_del(&f); free(s); free(t); return (ret);}
 
 
 
