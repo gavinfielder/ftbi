@@ -1,8 +1,8 @@
-# 42 Big Integers (ftbi) and 42 Big Floats (ftbf))
+# 42 Big Integers (ftbi) and Big Floats (ftbf)
 
-`t_ftbi` is a structure that can hold any size integer within (-inf, inf). It stores decimal digits in a string, with the lower power digits at lower indices and the higher power digits at higher indices (the 'number' is stored in reverse).   
+`t_ftbi` is a structure that can hold any size integer within (-inf, inf). It stores decimal digits in a string, with the lower power digits at lower indices and the higher power digits at higher indices (the 'number' is stored in reverse). Math operations are provided on `ftbi`'s.  
 
-`t_ftbf` is a structure that holds a floating point number at arbitrary precision. It does this by using a `t_ftbi` and a power 10 exponent. It can also hold special values of binary floating point--both positive and negative zero, positive and negative infinity, and NaN. Conversions are provided from float, double, and long double.   
+`t_ftbf` is a structure that holds a floating point number at arbitrary precision. It does this by using a `t_ftbi` and a power 10 exponent. It can also hold special values of binary floating point--both positive and negative zero, positive and negative infinity, and NaN. Conversions are provided from float, double, and long double. No floating point math is supported yet.  
 
 ## FTBI Functions
 
@@ -62,20 +62,20 @@ All the functions here return a **newly malloc'd** `t_fbi *`.
 ## Functions
 ### Constructors (Binary FP to ftbf conversions)
 
-- `ftbf_new_float(float f)` converts to ftbf from float.
-- `ftbf_new_double(double f)` converts to ftbf from double.
-- `ftbf_new_ldouble(long double f)` converts to ftbf from long double.
+- `t_ftbf *ftbf_new_float(float f)` converts to ftbf from float.
+- `t_ftbf *ftbf_new_double(double f)` converts to ftbf from double.
+- `t_ftbf *ftbf_new_ldouble(long double f)` converts to ftbf from long double.
 
 ### Destructors
 
-- `ftbf_del(t_ftbf **f)`
+- `void ftbf_del(t_ftbf **f)`
 
 ### Utility
 
-- `t_ftbf *ftbf_round(const t_ftbf *f, int prec)` returns a rounded version of f, to `prec` dplaces after the decimal. You can also use negative numbers in `prec` to round to the corresponding positive powers of 10. This function will force trailing zeros if `prec` is less than (precision is higher) than the existing exponent.  
-- `t_ftbf *ftbf_copy(const t_ftbf *f)` returns a copy of f.  
+- `t_ftbf *ftbf_round(const t_ftbf *f, int prec)` returns a rounded version of `f`, to `prec` dplaces after the decimal. You can also use negative numbers in `prec` to round to the corresponding positive powers of 10. This function will force trailing zeros if `prec` is less than (precision is higher) than the existing exponent.  
+- `t_ftbf *ftbf_copy(const t_ftbf *f)` returns a copy of `f`.  
 - `t_ftbf *ftbf_repl(t_ftbf **f, t_ftbf *value)` deletes the ftbf currently in the first argument's memory space and replaces it with the new ftbf supplied.  
-- `char *ftbf_tostr(const t_ftbf *f)` returns a newly malloc'd string containing the ascii representation of the ftbf.  
+- `char *ftbf_tostr(const t_ftbf *f)` returns a newly malloc'd string containing the ascii representation of the `f`.  
 
 ## Credits
 
