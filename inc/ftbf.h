@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 18:50:18 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/16 20:56:57 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/16 21:14:46 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,8 @@ typedef struct					s_ftbf
 ** -----------------------------------------------------------------------------
 */
 
-void							ftbf_print(const t_ftbf *f);
 t_ftbf							*ftbf_round(const t_ftbf *f, int prec);
 char							*ftbf_tostr(const t_ftbf *f);
-t_ftbf							*ftbf_shiftdiv10(const t_ftbf *f, int pow);
-t_ftbf							*ftbf_shiftmul10(const t_ftbf *f, int pow);
 t_ftbf							*ftbf_repl(t_ftbf **into, t_ftbf *value);
 t_ftbf							*ftbf_copy(const t_ftbf *f);
 
@@ -103,5 +100,7 @@ void							ftbf_del(t_ftbf **f);
 t_ftbf							*ftbf_check_special_float(float f);
 t_ftbf							*ftbf_check_special_double(double f);
 t_ftbf							*ftbf_check_special_ldouble(long double f);
+t_ftbf							*ftbf_shiftdiv10(const t_ftbf *f, int pow);
+t_ftbf							*ftbf_shiftmul10(const t_ftbf *f, int pow);
 
 #endif
