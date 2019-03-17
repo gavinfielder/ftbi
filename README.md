@@ -1,5 +1,4 @@
-# 42 Big Integers (ftbi)
-### (and 42 Big Floats (ftbf))
+# 42 Big Integers (ftbi) and 42 Big Floats (ftbf))
 
 `t_ftbi` is a structure that can hold any size integer within (-inf, inf). It stores decimal digits in a string, with the lower power digits at lower indices and the higher power digits at higher indices (the 'number' is stored in reverse).   
 
