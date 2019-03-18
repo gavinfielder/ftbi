@@ -56,6 +56,7 @@ All the functions here return a **newly malloc'd** `t_fbi *`.
 - `ftbi_is_unity(const t_ftbi *bi)` returns 1 if `bi` is 1 and 0 otherwise.
 - `ftbi_repl(t_ftbi **into, t_ftbi *value)` deletes the ftbi currently in the first argument's memory space and replaces it with the new ftbi supplied. This also enables emulating x += y in code.   
 - `ftbi_swap(t_ftbi **a, t_ftbi **b)` swaps two large integers.  
+- `char *ftbi_tostr(t_ftbi *bi)` returns a string representing the integer.  
 
 ## FTBF Functions
 
