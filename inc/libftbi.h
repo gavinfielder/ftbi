@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 15:20:10 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/14 19:07:04 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/17 20:22:38 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int					ftbi_is_unity(const t_ftbi *bi);
 t_ftbi				*ftbi_repl(t_ftbi **into, t_ftbi *value);
 t_ftbi				*ftbi_del_and_ret_null(int num_args, ...);
 void				ftbi_swap(t_ftbi **a, t_ftbi **b);
+
+char				*ftbi_tostr(t_ftbi *bi);
 
 /*
 ** -----------------------------------------------------------------------------

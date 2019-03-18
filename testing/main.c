@@ -6,7 +6,7 @@
 /*   By: gfielder <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 18:55:10 by gfielder          #+#    #+#             */
-/*   Updated: 2019/03/16 17:09:38 by gfielder         ###   ########.fr       */
+/*   Updated: 2019/03/17 20:26:51 by gfielder         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	freeform_test(int argc, char **argv)
 	if (argc > 1)
 		f = (long double)atof(argv[1]);
 	t_ftbf *bf = ftbf_new_ldouble(f);
-	ftbf_print(bf);
 	write(1, "\n", 1);
 	ftbf_del(&bf);
 }
